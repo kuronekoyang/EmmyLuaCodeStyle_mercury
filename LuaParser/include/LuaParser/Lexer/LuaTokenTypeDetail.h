@@ -15,6 +15,7 @@ enum LuaTokenTypeDetail : int {
     TK_FALSE,
     TK_FOR,
     TK_FUNCTION,
+    TK_ASYNC,
     TK_GOTO,
     TK_IF,
     TK_IN,

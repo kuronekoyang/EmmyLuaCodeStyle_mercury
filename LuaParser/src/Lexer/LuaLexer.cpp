@@ -17,6 +17,7 @@ std::map<std::string, LuaTokenKind, std::less<>> LuaLexer::LuaReserved = {
         {"false",    TK_FALSE   },
         {"for",      TK_FOR     },
         {"function", TK_FUNCTION},
+        {"async",    TK_ASYNC   },
         {"goto",     TK_GOTO    },
         {"if",       TK_IF      },
         {"in",       TK_IN      },

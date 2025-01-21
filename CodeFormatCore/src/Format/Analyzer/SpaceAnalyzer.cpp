@@ -144,6 +144,7 @@ void SpaceAnalyzer::Analyze(FormatState &f, const LuaSyntaxTree &t) {
                 case TK_GOTO:
                 case TK_FOR:
                 case TK_ELSE:
+                case TK_ASYNC:
                 case TK_FUNCTION:
                 case TK_END: {
                     SpaceRight(syntaxNode, t);

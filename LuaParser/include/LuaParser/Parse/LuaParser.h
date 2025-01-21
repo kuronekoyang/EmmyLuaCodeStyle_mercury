@@ -55,9 +55,9 @@ private:
 
     void RepeatStatement();
 
-    void FunctionStatement();
+    void FunctionStatement(bool isAsync);
 
-    void LocalFunctionStatement();
+    void LocalFunctionStatement(bool isAsync);
 
     void LocalStatement();
 

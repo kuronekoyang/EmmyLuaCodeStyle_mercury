@@ -168,13 +168,18 @@ void LuaParser::Statement() {
             RepeatStatement();
             break;
         }
+        case TK_ASYNC: {
+            FunctionStatement(true);
+            break;
+        }
         case TK_FUNCTION: {
-            FunctionStatement();
+            FunctionStatement(false);
             break;
         }
         case TK_LOCAL: {
-            if (LookAhead() == TK_FUNCTION) {
-                LocalFunctionStatement();
+            auto ahead = LookAhead();
+            if (ahead == TK_ASYNC || ahead == TK_FUNCTION) {
+                LocalFunctionStatement(ahead == TK_ASYNC);
             } else {
                 LocalStatement();
             }
@@ -350,8 +355,11 @@ void LuaParser::RepeatStatement() {
     m.Complete(*this, LuaSyntaxNodeKind::RepeatStatement);
 }
 
-void LuaParser::FunctionStatement() {
+void LuaParser::FunctionStatement(bool isAsync) {
     auto m = Mark();
+
+    if (isAsync)
+        CheckAndNext(TK_ASYNC);
 
     CheckAndNext(TK_FUNCTION);
 
@@ -364,10 +372,13 @@ void LuaParser::FunctionStatement() {
     m.Complete(*this, LuaSyntaxNodeKind::FunctionStatement);
 }
 
-void LuaParser::LocalFunctionStatement() {
+void LuaParser::LocalFunctionStatement(bool isAsync) {
     auto m = Mark();
 
     CheckAndNext(TK_LOCAL);
+
+    if (isAsync)
+        CheckAndNext(TK_ASYNC);
 
     CheckAndNext(TK_FUNCTION);
 
@@ -570,6 +581,15 @@ CompleteMarker LuaParser::SimpleExpression() {
         }
         case '{': {
             return TableConstructor();
+        }
+        case TK_ASYNC: {
+            auto m = Mark();
+
+            Next();
+            CheckAndNext(TK_FUNCTION);
+            FunctionBody();
+
+            return m.Complete(*this, LuaSyntaxNodeKind::ClosureExpression);
         }
         case TK_FUNCTION: {
             auto m = Mark();
