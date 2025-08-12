@@ -14,8 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-20.04, target: linux, platform: linux-x64 }
-          - { os: ubuntu-20.04, target: linux, platform: linux-aarch64 }
+          - { os: ubuntu-22.04, target: linux, platform: linux-x64 }
+          - { os: ubuntu-22.04, target: linux, platform: linux-aarch64 }
           - { os: macos-latest, target: darwin, platform: darwin-x64 }
           - { os: macos-latest, target: darwin, platform: darwin-arm64 }
           - { os: windows-latest, target: windows, platform: win32-x64 }
@@ -91,10 +91,11 @@ jobs:
   release:
     name: Upload Release
     needs: [build]
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: [ubuntu-latest]
     steps:
       - name: Download
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
       - name: Display structure of downloaded files
         run: ls -R
       - name: zip win32-x64
